@@ -215,5 +215,7 @@
 	</build>
 	<modules>
 		<module>sample-spring-helloworld</module>
+		<module>sample-spring-ioc</module>
+		<module>sample-spring-annotation</module>
 	</modules>
 </project>

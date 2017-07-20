@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="provider" class="org.fangj.sample.spring.helloworld.HelloWorldMessageProvider" />
+	<bean id="renderer" class="org.fangj.sample.spring.helloworld.StandardOutMessageRenderer">
+		<property name="messageProvider" ref="provider" />
+	</bean>
+	
+	<bean id="configurableMessageProvider" class="org.fangj.sample.spring.ioc.xmlconfig.ConfigurableMessageProvider">
+		<constructor-arg name="message" value="Configurable message" />
+	</bean>
+	
+	<bean id="intCC" class="org.fangj.sample.spring.ioc.xmlconfig.ConstructorConfusion">
+		<constructor-arg name="someValue" type="int" value="90" />
+	</bean>
+	<bean id="stringCC" class="org.fangj.sample.spring.ioc.xmlconfig.ConstructorConfusion">
+		<constructor-arg name="someValue" type="String" value="90" />
+	</bean>
+	
+	<bean id="injectSimple" class="org.fangj.sample.spring.ioc.xmlconfig.InjectSimple" p:name="Tomcat" p:age="12" p:height="17.1" p:programmer="true"
+        p:ageInSeconds="1009843200" />
+	
+	<bean id="injectSimpleConfig" class="org.fangj.sample.spring.ioc.xmlconfig.InjectSimpleConfig"/> 
+ 
+    <bean id="injectSimpleSpel" class="org.fangj.sample.spring.ioc.xmlconfig.InjectSimpleSpel"
+        p:name="#{injectSimpleConfig.name}"
+        p:age="#{injectSimpleConfig.age}"
+        p:height="#{injectSimpleConfig.height}"
+        p:programmer="#{injectSimpleConfig.programmer}"
+        p:ageInSeconds="#{injectSimpleConfig.ageInSeconds}"/>
+    <bean id="collectionInjection" class="org.fangj.sample.spring.ioc.xmlconfig.CollectionInjection">
+    	<property name="map">
+    		<map>
+    			<entry key="someValue">
+    				<value>Hello World!</value>
+    			</entry>
+    			<entry key="someBean">
+    				<ref bean="injectSimpleSpel"/>
+    			</entry>
+    		</map>
+    	</property>
+    	
+    	<property name="set">
+    		<set>
+    			<value>hello,world</value>
+    			<ref bean="injectSimpleSpel"/>
+    		</set>
+    	</property>
+    	<property name="props">
+            <props>
+                <prop key="firstName">Chris</prop>
+                <prop key="secondName">Schaefer</prop>
+            </props>
+        </property>
+    	<property name="list">
+            <list>
+                <value>Hello World!</value>
+                <ref bean="injectSimpleSpel"/>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="keyHelper" class="org.fangj.sample.spring.ioc.xmlconfig.KingKeyHelper" scope="prototype"/>
+    
+    <bean id="tomLockOpener" class="org.fangj.sample.spring.ioc.xmlconfig.TomLockOpener"  p:keyHelper-ref="keyHelper" />
+    
+    <!--consider to use lookup-method beans with different life cycles  -->
+    <bean id="abstractLockOpener" class="org.fangj.sample.spring.ioc.xmlconfig.AbstractLockOpener" >
+    	<lookup-method name="getKeyHelper" bean="keyHelper"/>
+    </bean>
+    
+    <!-- alias -->
+    <bean id="name1" name="name2 name3,name4;name5" class="java.lang.String"/>
+    <alias name="name1" alias="name6"/>
+    
+</beans>
